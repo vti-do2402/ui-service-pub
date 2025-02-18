@@ -44,10 +44,10 @@ jobs:
           uses: ./.github/actions/build-docker-image
           with:
             image_name: 774305578623.dkr.ecr.ap-southeast-1.amazonaws.com/ui-service
-            tag: ${{ inputs.environment }}
+            tag: dev
 
         - name: Push Docker Image
           uses: ./.github/actions/push-docker-image
           with:
             image_name: 774305578623.dkr.ecr.ap-southeast-1.amazonaws.com/ui-service
-            tag: ${{ inputs.environment }}
+            tag: dev
