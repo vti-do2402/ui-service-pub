@@ -15,5 +15,5 @@ runs:
     - name: Build docker image
       shell: bash
       run: |
-        chmod 777 /var/run/docker.sock
+        sudo chmod 777 /var/run/docker.sock
         docker build -t ${{ inputs.image_name }}:${{ inputs.tag }} . --no-cache
