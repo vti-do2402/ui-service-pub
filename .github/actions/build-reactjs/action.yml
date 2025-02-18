@@ -7,8 +7,6 @@ runs:
     - name: Build ReactJS App
       shell: bash
       run: |
-        rm -rf node_modules
-        rm -f package-lock.json
         npm cache clean --force
         npm install --save-dev web-vitals
         npm install
