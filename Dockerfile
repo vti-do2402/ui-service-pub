@@ -1,5 +1,7 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
+RUN npm cache clean --force
+RUN npm install --save-dev web-vitals
 COPY package*.json ./
 RUN npm install
 COPY . .
