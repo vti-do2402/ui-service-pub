@@ -7,5 +7,7 @@ runs:
     - name: Build ReactJS App
       shell: bash
       run: |
+        npm cache clean --force
+        npm install --save-dev web-vitals
         npm install
         npm run build
