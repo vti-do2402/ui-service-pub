@@ -1,21 +1,38 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+
+const API_URL = "http://localhost:8080/api";
 
 function App() {
-  const [metrics, setMetrics] = useState('');
+  const [metrics, setMetrics] = useState("");
   const [deployments, setDeployments] = useState([]);
+  const [isSeeded, setIsSeeded] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/metrics')
-      .then(res => res.text())
+    fetch(`${API_URL}/metrics`)
+      .then((res) => res.text())
       .then(setMetrics)
       .catch(console.error);
 
-    fetch('http://localhost:8080/api/deployments')
-      .then(res => res.json())
+    fetch(`${API_URL}/deployments`)
+      .then((res) => res.json())
       .then(setDeployments)
       .catch(console.error);
   }, []);
+
+  // ✅ Fetch deployments when seed status changes
+  useEffect(() => {
+    if (isSeeded) {
+      fetch(`${API_URL}/deployments/seed`, { method: "POST" })
+        .then((res) => res.json())
+        .then(setDeployments)
+        .catch(console.error);
+    } else {
+      fetch(`${API_URL}/deployments/clear`, { method: "DELETE" })
+        .then(() => setDeployments([]))
+        .catch(console.error);
+    }
+  }, [isSeeded]);
 
   return (
     <div className="dashboard">
@@ -30,6 +47,10 @@ function App() {
 
       <section className="deployments-container">
         <h3>📦 Recent Deployments</h3>
+        <div>
+          <button onClick={() => setIsSeeded(true)}>Seed</button>
+          <button onClick={() => setIsSeeded(false)}>Clear</button>
+        </div>
         <div className="table-wrapper">
           <table>
             <thead>
