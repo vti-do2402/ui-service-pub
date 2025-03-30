@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-const API_URL = "http://localhost:8080/api";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
 
 function App() {
   const [metrics, setMetrics] = useState("");
@@ -35,23 +35,23 @@ function App() {
   }, [isSeeded]);
 
   return (
-    <div className="dashboard">
-      <header className="header">
+    <div className='dashboard'>
+      <header className='header'>
         <h1>🚀 DevOps Deployment Dashboard</h1>
       </header>
 
-      <section className="metrics-card">
+      <section className='metrics-card'>
         <h2>📊 System Metrics</h2>
         <p>{metrics || "Loading metrics..."}</p>
       </section>
 
-      <section className="deployments-container">
+      <section className='deployments-container'>
         <h3>📦 Recent Deployments</h3>
         <div>
           <button onClick={() => setIsSeeded(true)}>Seed</button>
           <button onClick={() => setIsSeeded(false)}>Clear</button>
         </div>
-        <div className="table-wrapper">
+        <div className='table-wrapper'>
           <table>
             <thead>
               <tr>
@@ -75,7 +75,7 @@ function App() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4">No deployments found.</td>
+                  <td colSpan='4'>No deployments found.</td>
                 </tr>
               )}
             </tbody>
