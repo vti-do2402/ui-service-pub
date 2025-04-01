@@ -19,6 +19,14 @@ FROM nginx:alpine
 COPY --from=builder /workspace/app/build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
+ARG APP_NAME
+ARG APP_VERSION
+
+# Application metadata
+LABEL maintainer="Quentin Vu <quentindevops@gmail.com>" \
+      app.name=${APP_NAME:-ui-service} \
+      app.version=${APP_VERSION}
+
 # Runtime configuration - can be overridden at runtime
 ENV PORT=80
 ENV HOSTNAME=localhost
