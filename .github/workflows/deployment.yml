@@ -8,13 +8,12 @@ on:
 jobs:
   build:
     name: "🔍 Build"
-    uses: vti-do2402/cicd-core/.github/workflows/ci-maven.yml@main
+    uses: vti-do2402/cicd-core/.github/workflows/ci-react.yml@main
     with:
       runs_on: ${{ vars.RUNS_ON }}
-      java_version: ${{ vars.JAVA_VERSION }}
-      distribution: ${{ vars.JAVA_DISTRIBUTION }}
+      node_version: ${{ vars.NODE_VERSION }}
       skip_sonar: true
-      artifacts: database-service
+      artifacts: ui-service
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
