@@ -14,7 +14,7 @@ permissions:
 jobs:
   ci:
     name: "🔍 Check"
-    uses: vti-do2402/cicd-core/.github/workflows/ci-react.yml@feat/ci-react
+    uses: vti-do2402/cicd-core/.github/workflows/ci-react.yml@main
     with:
       runs_on: ${{ vars.RUNS_ON }}
       node_version: ${{ vars.NODE_VERSION }}
