@@ -8,7 +8,15 @@ function App() {
   const [deployments, setDeployments] = useState([]);
 
   useEffect(() => {
-    refreshAll();
+    fetch(`${API_URL}/deployments`)
+      .then((res) => res.json())
+      .then(setDeployments)
+      .catch(console.error);
+
+    fetch(`${API_URL}/metrics`)
+      .then((res) => res.text())
+      .then(setMetrics)
+      .catch(console.error);
   }, []);
 
   const seedDeployments = () => {
