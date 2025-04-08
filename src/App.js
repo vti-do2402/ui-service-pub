@@ -6,33 +6,45 @@ const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
 function App() {
   const [metrics, setMetrics] = useState("");
   const [deployments, setDeployments] = useState([]);
-  const [isSeeded, setIsSeeded] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/metrics`)
-      .then((res) => res.text())
-      .then(setMetrics)
-      .catch(console.error);
-
     fetch(`${API_URL}/deployments`)
       .then((res) => res.json())
       .then(setDeployments)
       .catch(console.error);
+
+    fetch(`${API_URL}/metrics`)
+      .then((res) => res.text())
+      .then(setMetrics)
+      .catch(console.error);
   }, []);
 
-  // ✅ Fetch deployments when seed status changes
-  useEffect(() => {
-    if (isSeeded) {
-      fetch(`${API_URL}/deployments/seed`, { method: "POST" })
-        .then((res) => res.json())
-        .then(setDeployments)
-        .catch(console.error);
-    } else {
-      fetch(`${API_URL}/deployments/clear`, { method: "DELETE" })
-        .then(() => setDeployments([]))
-        .catch(console.error);
-    }
-  }, [isSeeded]);
+  const seedDeployments = () => {
+    fetch(`${API_URL}/deployments/seed`).then(refreshAll).catch(console.error);
+  };
+
+  const clearDeployments = () => {
+    fetch(`${API_URL}/deployments/clear`).then(refreshAll).catch(console.error);
+  };
+
+  const refreshAll = () => {
+    refreshDeployments();
+    refreshMetrics();
+  };
+
+  const refreshMetrics = () => {
+    fetch(`${API_URL}/metrics`)
+      .then((res) => res.text())
+      .then(setMetrics)
+      .catch(console.error);
+  };
+
+  const refreshDeployments = () => {
+    fetch(`${API_URL}/deployments`)
+      .then((res) => res.json())
+      .then(setDeployments)
+      .catch(console.error);
+  };
 
   return (
     <div className='dashboard'>
@@ -48,8 +60,9 @@ function App() {
       <section className='deployments-container'>
         <h3>📦 Recent Deployments</h3>
         <div>
-          <button onClick={() => setIsSeeded(true)}>Seed</button>
-          <button onClick={() => setIsSeeded(false)}>Clear</button>
+          <button onClick={() => seedDeployments()}>Seed</button>
+          <button onClick={() => clearDeployments()}>Clear</button>
+          <button onClick={() => refreshAll()}>Refresh</button>
         </div>
         <div className='table-wrapper'>
           <table>
