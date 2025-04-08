@@ -7,32 +7,22 @@ RUN npm ci --omit=dev
 COPY public ./public
 COPY src ./src
 
-# Build-time variables for the React app
-ARG REACT_APP_API_URL=http://localhost:8080/api
-ENV REACT_APP_API_URL=${REACT_APP_API_URL}
-
+ARG REACT_APP_API_URL=/api
 RUN npm run build
 
 # ------------------------------------------------------------
 
 FROM nginx:alpine
+
 COPY --from=builder /workspace/app/build /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-ARG APP_NAME
-ARG APP_VERSION
-
-# Application metadata
-LABEL maintainer="Quentin Vu <quentindevops@gmail.com>" \
-      app.name=${APP_NAME:-ui-service} \
-      app.version=${APP_VERSION}
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 # Runtime configuration - can be overridden at runtime
-ENV PORT=80
-ENV HOSTNAME=localhost
+ENV PORT=80 \
+    HOSTNAME=localhost \
+    API_URL=http://api-gateway:8080
+
 EXPOSE ${PORT}
 
-RUN sed -i -e 's/$PORT/'"$PORT"'/g' /etc/nginx/conf.d/default.conf
-RUN sed -i -e 's/$HOSTNAME/'"$HOSTNAME"'/g' /etc/nginx/conf.d/default.conf
-
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+# Use envsubst for safer environment variable substitution
+CMD ["/bin/sh", "-c", "envsubst '${PORT} ${HOSTNAME} ${API_URL}' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
